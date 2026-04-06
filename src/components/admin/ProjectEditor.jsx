@@ -1,12 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const ProjectEditor = ({ portfolioData, projectIndex, updateData, onClose }) => {
     const project = portfolioData.projects[projectIndex];
     const [formData, setFormData] = useState(JSON.parse(JSON.stringify(project)));
     const [uploading, setUploading] = useState(false);
     const [uploadError, setUploadError] = useState(null);
+    const [uploadSuccess, setUploadSuccess] = useState(null);
+    const [cloudinaryConfig, setCloudinaryConfig] = useState(null);
 
     const MAX_VIDEO_SIZE_MB = 100;
+
+    // Fetch Cloudinary config from Vercel environment variables
+    useEffect(() => {
+        const fetchCloudinaryConfig = async () => {
+            try {
+                const response = await fetch('/api/cloudinary-config');
+                const data = await response.json();
+                if (response.ok && data.cloudName && data.uploadPreset) {
+                    setCloudinaryConfig(data);
+                } else {
+                    // Fallback to localStorage settings
+                    const localSettings = portfolioData.settings.cloudSettings;
+                    if (localSettings.cloudName && localSettings.uploadPreset) {
+                        setCloudinaryConfig(localSettings);
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to fetch Cloudinary config:', err);
+                // Fallback to localStorage settings
+                const localSettings = portfolioData.settings.cloudSettings;
+                if (localSettings.cloudName && localSettings.uploadPreset) {
+                    setCloudinaryConfig(localSettings);
+                }
+            }
+        };
+        fetchCloudinaryConfig();
+    }, [portfolioData.settings.cloudSettings]);
 
     const handleChange = (field, value) => {
         setFormData(prev => ({
@@ -28,17 +57,57 @@ const ProjectEditor = ({ portfolioData, projectIndex, updateData, onClose }) => 
         alert('Project updated successfully!');
     };
 
-    const handleImageUpload = async (file) => {
+    const handleThumbnailUpload = async (file) => {
         if (!file) return;
 
-        const { cloudName, uploadPreset } = portfolioData.settings.cloudSettings;
-        if (!cloudName || !uploadPreset) {
-            setUploadError('Cloudinary config missing in Global Settings!');
+        if (!cloudinaryConfig || !cloudinaryConfig.cloudName || !cloudinaryConfig.uploadPreset) {
+            setUploadError('Cloudinary config missing! Set CLOUDINARY_CLOUD_NAME and CLOUDINARY_UPLOAD_PRESET in Vercel environment variables.');
+            setUploadSuccess(null);
             return;
         }
 
+        const { cloudName, uploadPreset } = cloudinaryConfig;
+
         setUploading(true);
         setUploadError(null);
+        setUploadSuccess(null);
+        const data = new FormData();
+        data.append('file', file);
+        data.append('upload_preset', uploadPreset);
+
+        try {
+            const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+                method: 'POST',
+                body: data
+            });
+            const result = await response.json();
+            if (response.ok) {
+                handleChange('thumbnail', result.secure_url);
+                setUploadSuccess('Thumbnail uploaded successfully!');
+            } else {
+                setUploadError('Upload failed: ' + (result.error?.message || 'Check your Cloudinary settings.'));
+            }
+        } catch (err) {
+            setUploadError('Network error. Check your connection or Cloudinary URL.');
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const handleImageUpload = async (file) => {
+        if (!file) return;
+
+        if (!cloudinaryConfig || !cloudinaryConfig.cloudName || !cloudinaryConfig.uploadPreset) {
+            setUploadError('Cloudinary config missing! Set CLOUDINARY_CLOUD_NAME and CLOUDINARY_UPLOAD_PRESET in Vercel environment variables.');
+            setUploadSuccess(null);
+            return;
+        }
+
+        const { cloudName, uploadPreset } = cloudinaryConfig;
+
+        setUploading(true);
+        setUploadError(null);
+        setUploadSuccess(null);
         const data = new FormData();
         data.append('file', file);
         data.append('upload_preset', uploadPreset);
@@ -51,6 +120,7 @@ const ProjectEditor = ({ portfolioData, projectIndex, updateData, onClose }) => 
             const result = await response.json();
             if (response.ok) {
                 handleChange('image', result.secure_url);
+                setUploadSuccess('Image uploaded successfully!');
             } else {
                 setUploadError('Upload failed: ' + (result.error?.message || 'Check your Cloudinary settings.'));
             }
@@ -69,11 +139,12 @@ const ProjectEditor = ({ portfolioData, projectIndex, updateData, onClose }) => 
             return;
         }
 
-        const { cloudName, uploadPreset } = portfolioData.settings.cloudSettings;
-        if (!cloudName || !uploadPreset) {
-            setUploadError('Cloudinary config missing in Global Settings!');
+        if (!cloudinaryConfig || !cloudinaryConfig.cloudName || !cloudinaryConfig.uploadPreset) {
+            setUploadError('Cloudinary config missing! Set CLOUDINARY_CLOUD_NAME and CLOUDINARY_UPLOAD_PRESET in Vercel environment variables.');
             return;
         }
+
+        const { cloudName, uploadPreset } = cloudinaryConfig;
 
         setUploading(true);
         setUploadError(null);
@@ -118,8 +189,28 @@ const ProjectEditor = ({ portfolioData, projectIndex, updateData, onClose }) => 
                 </div>
 
                 <div className="form-group" style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.05)' }}>
-                    <label className="form-label" style={{ color: 'var(--color-accent-primary)' }}>Main Project Image</label>
+                    <label className="form-label" style={{ color: 'var(--color-accent-primary)' }}>Thumbnail Image (Project Card)</label>
+                    <p style={{ fontSize: '0.85rem', opacity: 0.7, marginBottom: '0.5rem' }}>This image appears in the project grid on the main page</p>
+                    <input type="file" accept="image/*" className="form-input" style={{ marginBottom: '0.5rem' }} onChange={(e) => handleThumbnailUpload(e.target.files[0])} />
+                    {uploading && <div style={{ color: '#00c3ff', fontSize: '0.8rem', marginBottom: '0.5rem' }}>Uploading...</div>}
+                    {uploadSuccess && <div style={{ color: '#00ff88', fontSize: '0.8rem', marginBottom: '0.5rem' }}>✓ {uploadSuccess}</div>}
+                    {uploadError && <div style={{ color: '#ff4b2b', fontSize: '0.8rem', marginBottom: '0.5rem' }}>{uploadError}</div>}
+
+                    {formData.thumbnail && (
+                        <div className="image-preview-admin" style={{ marginBottom: '0.5rem', borderRadius: '0.8rem', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', background: '#000' }}>
+                            <img src={formData.thumbnail} alt="Thumbnail Preview" style={{ width: '100%', display: 'block', maxHeight: '150px', objectFit: 'cover' }} />
+                        </div>
+                    )}
+                    <input type="text" className="form-input" value={formData.thumbnail || ''} placeholder="Or Paste Thumbnail URL" onChange={(e) => handleChange('thumbnail', e.target.value)} />
+                </div>
+
+                <div className="form-group" style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.05)' }}>
+                    <label className="form-label" style={{ color: 'var(--color-accent-primary)' }}>Detail Page Hero Image</label>
+                    <p style={{ fontSize: '0.85rem', opacity: 0.7, marginBottom: '0.5rem' }}>This image appears as the large hero on the project detail page</p>
                     <input type="file" accept="image/*" className="form-input" style={{ marginBottom: '0.5rem' }} onChange={(e) => handleImageUpload(e.target.files[0])} />
+                    {uploading && <div style={{ color: '#00c3ff', fontSize: '0.8rem', marginBottom: '0.5rem' }}>Uploading...</div>}
+                    {uploadSuccess && <div style={{ color: '#00ff88', fontSize: '0.8rem', marginBottom: '0.5rem' }}>✓ {uploadSuccess}</div>}
+                    {uploadError && <div style={{ color: '#ff4b2b', fontSize: '0.8rem', marginBottom: '0.5rem' }}>{uploadError}</div>}
 
                     {formData.image && (
                         <div className="image-preview-admin" style={{ marginBottom: '0.5rem', borderRadius: '0.8rem', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', background: '#000' }}>

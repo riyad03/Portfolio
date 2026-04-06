@@ -21,7 +21,7 @@ const ScrollToTop = () => {
 };
 
 function App() {
-  const { portfolioData, updateData } = usePortfolio();
+  const { portfolioData, updateData, loading, error } = usePortfolio();
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [editingProjectIndex, setEditingProjectIndex] = useState(null);
@@ -46,7 +46,26 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isAdminMode]); // Added isAdminMode to dependencies if needed, or keep it empty if startProjectEdit is stable
 
-  if (!portfolioData) return <div>Loading...</div>;
+  // Loading state
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        fontSize: '1.2rem',
+        color: 'var(--color-text)'
+      }}>
+        Loading portfolio...
+      </div>
+    );
+  }
+
+  // Error state (still shows portfolio with fallback data)
+  if (error) {
+    console.warn('Portfolio loaded with fallback data:', error);
+  }
 
   const handleAuthenticated = () => {
     setIsAdminMode(true);

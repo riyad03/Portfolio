@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CustomSectionBuilder from './CustomSectionBuilder';
 
 const AdminPanel = ({ portfolioData, updateData, onClose }) => {
@@ -6,7 +6,35 @@ const AdminPanel = ({ portfolioData, updateData, onClose }) => {
     const [formData, setFormData] = useState(JSON.parse(JSON.stringify(portfolioData)));
     const [uploadingIndex, setUploadingIndex] = useState(null);
     const [uploadError, setUploadError] = useState(null);
+    const [cloudinaryConfig, setCloudinaryConfig] = useState(null);
     const scrollContainerRef = React.useRef(null);
+
+    // Fetch Cloudinary config from Vercel environment variables
+    useEffect(() => {
+        const fetchCloudinaryConfig = async () => {
+            try {
+                const response = await fetch('/api/cloudinary-config');
+                const data = await response.json();
+                if (response.ok && data.cloudName && data.uploadPreset) {
+                    setCloudinaryConfig(data);
+                } else {
+                    // Fallback to localStorage settings
+                    const localSettings = formData.settings.cloudSettings;
+                    if (localSettings.cloudName && localSettings.uploadPreset) {
+                        setCloudinaryConfig(localSettings);
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to fetch Cloudinary config:', err);
+                // Fallback to localStorage settings
+                const localSettings = formData.settings.cloudSettings;
+                if (localSettings.cloudName && localSettings.uploadPreset) {
+                    setCloudinaryConfig(localSettings);
+                }
+            }
+        };
+        fetchCloudinaryConfig();
+    }, [formData.settings.cloudSettings]);
 
     React.useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -94,12 +122,13 @@ const AdminPanel = ({ portfolioData, updateData, onClose }) => {
             return;
         }
 
-        const { cloudName, uploadPreset } = formData.settings.cloudSettings;
-        if (!cloudName || !uploadPreset) {
+        if (!cloudinaryConfig || !cloudinaryConfig.cloudName || !cloudinaryConfig.uploadPreset) {
             console.warn('Cloudinary config missing: cloudName or uploadPreset not set.');
-            setUploadError('Cloudinary config missing! Set "Cloud Name" and "Upload Preset" in the Cloud Storage section below.');
+            setUploadError('Cloudinary config missing! Set CLOUDINARY_CLOUD_NAME and CLOUDINARY_UPLOAD_PRESET in Vercel environment variables.');
             return;
         }
+
+        const { cloudName, uploadPreset } = cloudinaryConfig;
 
         setUploadingIndex(index);
         setUploadError(null);
@@ -175,6 +204,32 @@ const AdminPanel = ({ portfolioData, updateData, onClose }) => {
                 {/* Section Visibility */}
                 <div className="admin-section">
                     <h3>Section Management</h3>
+
+                    {/* Highlighted Project Selector */}
+                    <div className="form-group" style={{ marginBottom: '1.5rem', padding: '1rem', background: 'rgba(0,195,255,0.05)', borderRadius: '1rem', border: '1px solid rgba(0,195,255,0.2)' }}>
+                        <label className="form-label" style={{ color: 'var(--color-accent-primary)', marginBottom: '0.5rem', display: 'block' }}>
+                            ⭐ Featured/Highlighted Project
+                        </label>
+                        <p style={{ fontSize: '0.85rem', opacity: 0.7, marginBottom: '0.8rem' }}>
+                            Select which project to showcase prominently on the home page
+                        </p>
+                        <select
+                            className="form-input"
+                            value={formData.settings.highlightedProjectIndex ?? 0}
+                            onChange={(e) => {
+                                const updated = { ...formData.settings, highlightedProjectIndex: parseInt(e.target.value, 10) };
+                                setFormData(prev => ({ ...prev, settings: updated }));
+                            }}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            {formData.projects.map((project, index) => (
+                                <option key={index} value={index}>
+                                    {project.title || `Project ${index + 1}`}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
                     <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                         {['certifications', 'experience', 'videos'].map(s => (
                             <label key={s} style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', cursor: 'pointer' }}>

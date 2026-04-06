@@ -106,6 +106,7 @@ export const defaultData = {
     },
     settings: {
         password: 'admin',
+        highlightedProjectIndex: 0,
         sectionsVisible: {
             certifications: false,
             experience: false,
