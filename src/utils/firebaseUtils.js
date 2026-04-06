@@ -77,7 +77,13 @@ export const setPortfolioData = async (data) => {
         console.log('🟢 [Firebase] Calling setDoc with data...');
         console.log('🟢 [Firebase] Data size:', JSON.stringify(dataToSave).length, 'characters');
 
-        await setDoc(docRef, dataToSave);
+        // Add timeout to detect hanging requests
+        const savePromise = setDoc(docRef, dataToSave);
+        const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Firebase save timeout after 10 seconds')), 10000)
+        );
+
+        await Promise.race([savePromise, timeoutPromise]);
 
         console.log('✅✅✅ [Firebase] Portfolio data saved to Firestore successfully! ✅✅✅');
 
