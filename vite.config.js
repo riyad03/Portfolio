@@ -13,5 +13,21 @@ export default defineConfig({
       'react': path.resolve(__dirname, './node_modules/react'),
       'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
     }
+  },
+  build: {
+    // Enable file hashing for cache busting
+    rollupOptions: {
+      output: {
+        entryFileNames: 'assets/[name].[hash].js',
+        chunkFileNames: 'assets/[name].[hash].js',
+        assetFileNames: 'assets/[name].[hash].[ext]'
+      }
+    }
+  },
+  server: {
+    // Disable caching in development
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate'
+    }
   }
 })
