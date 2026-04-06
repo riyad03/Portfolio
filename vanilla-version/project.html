@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Details</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --color-bg-primary: #0a0a0f;
+            --color-bg-secondary: #12121a;
+            --color-bg-tertiary: #1a1a28;
+            --color-accent-primary: #6366f1;
+            --color-accent-secondary: #8b5cf6;
+            --color-accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --color-text-primary: #ffffff;
+            --color-text-secondary: #a8a8b8;
+            --color-text-muted: #6b6b7b;
+            --glass-bg: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --font-primary: 'Inter', -apple-system, sans-serif;
+            --font-display: 'Outfit', var(--font-primary);
+            --radius-md: 1rem;
+            --radius-lg: 1.5rem;
+            --transition-base: 300ms ease;
+            --max-w: 820px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.12) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ── HEADER ── */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+            animation: slideDown 0.5s ease both;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            border-radius: 999px;
+            color: var(--color-text-secondary);
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all var(--transition-base);
+            font-family: var(--font-primary);
+        }
+
+        .back-btn:hover {
+            color: var(--color-text-primary);
+            border-color: var(--color-accent-primary);
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .back-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .header-logo {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            background: var(--color-accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ── HERO IMAGE ── */
+        .project-hero {
+            width: 100%;
+            height: 70vh;
+            min-height: 420px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 0;
+        }
+
+        .project-hero-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            animation: zoomIn 1.4s ease both;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(1.08);
+            }
+
+            to {
+                transform: scale(1.0);
+            }
+        }
+
+        .project-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom,
+                    rgba(10, 10, 15, 0.25) 0%,
+                    rgba(10, 10, 15, 0.05) 30%,
+                    rgba(10, 10, 15, 1) 100%);
+        }
+
+        /* ── PAGE CONTENT ── */
+        .page-content {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 0 1.5rem 6rem;
+        }
+
+        /* ── TITLE AREA ── */
+        .title-area {
+            margin-top: -3rem;
+            margin-bottom: 3rem;
+            animation: fadeUp 0.7s ease 0.1s both;
+        }
+
+        .project-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.2rem, 6vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            color: var(--color-text-primary);
+            margin-bottom: 1.25rem;
+        }
+
+        .tags-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            padding: 0.3rem 0.85rem;
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            border-radius: 999px;
+            font-size: 0.82rem;
+            color: var(--color-accent-primary);
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+
+        /* ── SECTION ── */
+        .section {
+            margin-bottom: 3.5rem;
+            animation: fadeUp 0.7s ease 0.2s both;
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--color-accent-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--glass-border);
+        }
+
+        .project-description {
+            font-size: 1.15rem;
+            line-height: 1.85;
+            color: var(--color-text-secondary);
+        }
+
+        /* ── STATS ── */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--glass-border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+        }
+
+        .stat-card {
+            background: var(--color-bg-secondary);
+            padding: 1.5rem 1rem;
+            text-align: center;
+            transition: background var(--transition-base);
+        }
+
+        .stat-card:hover {
+            background: rgba(99, 102, 241, 0.06);
+        }
+
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 1.9rem;
+            font-weight: 800;
+            background: var(--color-accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        .stat-label {
+            font-size: 0.78rem;
+            color: var(--color-text-muted);
+            margin-top: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        /* ── VIDEO ── */
+        .video-thumb {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            border: 1px solid var(--glass-border);
+            display: block;
+        }
+
+        .video-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .video-thumb:hover img {
+            transform: scale(1.03);
+        }
+
+        .video-thumb-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .video-thumb:hover .video-thumb-overlay {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .play-btn {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.15), 0 8px 30px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .video-thumb:hover .play-btn {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 12px rgba(99, 102, 241, 0.25), 0 8px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .play-btn svg {
+            width: 28px;
+            height: 28px;
+            fill: #6366f1;
+            margin-left: 4px;
+        }
+
+        .video-label {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 0.35rem 0.9rem;
+            border-radius: 999px;
+            backdrop-filter: blur(8px);
+            white-space: nowrap;
+        }
+
+        /* ── TECH STACK ── */
+        .tech-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+
+        .tech-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.55rem 1.1rem;
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--color-text-primary);
+            transition: all var(--transition-base);
+        }
+
+        .tech-pill:hover {
+            border-color: var(--color-accent-primary);
+            background: rgba(99, 102, 241, 0.08);
+            color: var(--color-accent-primary);
+        }
+
+        /* ── CTA ── */
+        .cta-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.85rem 1.75rem;
+            background: var(--color-accent-gradient);
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            font-family: var(--font-primary);
+            transition: all var(--transition-base);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.85rem 1.75rem;
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            color: var(--color-text-secondary);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            font-family: var(--font-primary);
+            transition: all var(--transition-base);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--color-accent-primary);
+            color: var(--color-text-primary);
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        /* ── NOT FOUND ── */
+        .not-found {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 1rem;
+            padding: 2rem;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.35);
+            border-radius: 999px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .project-hero {
+                height: 45vh;
+            }
+
+            .title-area {
+                margin-top: -1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <a href="index.html" class="back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            Back
+        </a>
+        <span class="header-logo" id="header-logo">Riyad Rachidi</span>
+    </header>
+
+    <div id="app"></div>
+
+    <script>
+        // ── Helpers ──
+        function toEmbedUrl(url) {
+            if (!url) return '';
+            if (url.includes('youtube.com/embed/') || url.includes('player.vimeo.com')) return url;
+            let m = url.match(/youtu\.be\/([^?&]+)/);
+            if (m) return `https://www.youtube.com/embed/${m[1]}`;
+            m = url.match(/[?&]v=([^&]+)/);
+            if (m) return `https://www.youtube.com/embed/${m[1]}`;
+            m = url.match(/youtube\.com\/shorts\/([^?&]+)/);
+            if (m) return `https://www.youtube.com/embed/${m[1]}`;
+            return url;
+        }
+
+        // Extract YouTube video ID from any URL format
+        function getYouTubeId(url) {
+            if (!url) return null;
+            let m = url.match(/youtu\.be\/([^?&]+)/);
+            if (m) return m[1];
+            m = url.match(/[?&]v=([^&]+)/);
+            if (m) return m[1];
+            m = url.match(/youtube\.com\/embed\/([^?&]+)/);
+            if (m) return m[1];
+            m = url.match(/youtube\.com\/shorts\/([^?&]+)/);
+            if (m) return m[1];
+            return null;
+        }
+
+        // Convert any YouTube URL to a watch URL
+        function toWatchUrl(url) {
+            const id = getYouTubeId(url);
+            if (id) return `https://www.youtube.com/watch?v=${id}`;
+            return url; // Vimeo or other — return as-is
+        }
+
+        // ── Load data ──
+        const saved = localStorage.getItem('portfolioData');
+        let portfolioData = null;
+        if (saved) { try { portfolioData = JSON.parse(saved); } catch (e) { } }
+
+        const defaultProjects = [
+            { title: 'E-Commerce Platform', description: 'A modern e-commerce solution with real-time inventory management and secure payment processing.', image: 'https://images.unsplash.com/photo-1557821552-17105176677c?w=1400&h=800&fit=crop', tags: ['React', 'Node.js', 'MongoDB'], link: '#', videoUrl: '' },
+            { title: 'Task Management App', description: 'Collaborative task management tool with real-time updates and team synchronization.', image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1400&h=800&fit=crop', tags: ['Vue.js', 'Firebase', 'Tailwind'], link: '#', videoUrl: '' },
+            { title: 'Analytics Dashboard', description: 'Data visualization dashboard with interactive charts and real-time metrics tracking.', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1400&h=800&fit=crop', tags: ['React', 'D3.js', 'Express'], link: '#', videoUrl: '' },
+            { title: 'AgriTech Smart Farming', description: 'An intelligent agriculture platform leveraging IoT sensors and AI to optimize crop yields, monitor soil health, and automate irrigation systems.', image: 'https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=1400&h=800&fit=crop', tags: ['IoT', 'Python', 'Machine Learning'], link: '#', videoUrl: '' },
+            { title: 'Crypto Finance Dashboard', description: 'A real-time cryptocurrency and financial analytics platform with portfolio tracking, live market data, and AI-powered trading insights.', image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1400&h=800&fit=crop', tags: ['React', 'Web3.js', 'Node.js'], link: '#', videoUrl: '' }
+        ];
+
+        const projects = portfolioData?.projects ?? defaultProjects;
+        const ownerName = portfolioData?.hero?.name ?? 'Riyad Rachidi';
+        document.getElementById('header-logo').textContent = ownerName;
+
+        const params = new URLSearchParams(window.location.search);
+        const idx = parseInt(params.get('index'), 10);
+        const project = (!isNaN(idx) && idx >= 0 && idx < projects.length) ? projects[idx] : null;
+        const app = document.getElementById('app');
+
+        // ── Per-project stats ──
+        function getStats(p) {
+            const t = (p.tags || []).join(' ').toLowerCase() + ' ' + p.title.toLowerCase();
+            if (t.includes('iot') || t.includes('agri') || t.includes('farm'))
+                return [{ value: '40%', label: 'Yield Increase' }, { value: '60%', label: 'Water Saved' }, { value: '24/7', label: 'Monitoring' }];
+            if (t.includes('crypto') || t.includes('web3') || t.includes('finance') || t.includes('trading'))
+                return [{ value: '500+', label: 'Coins Tracked' }, { value: '< 1s', label: 'Data Latency' }, { value: '99.9%', label: 'Uptime' }];
+            if (t.includes('analytics') || t.includes('dashboard') || t.includes('d3'))
+                return [{ value: '50+', label: 'Chart Types' }, { value: 'Real-time', label: 'Updates' }, { value: '10x', label: 'Faster Insights' }];
+            if (t.includes('task') || t.includes('management') || t.includes('firebase'))
+                return [{ value: '100+', label: 'Users Supported' }, { value: 'Real-time', label: 'Sync' }, { value: '∞', label: 'Tasks' }];
+            return [{ value: '99.9%', label: 'Uptime' }, { value: 'Fast', label: 'Performance' }, { value: 'Secure', label: 'Payments' }];
+        }
+
+        if (!project) {
+            app.innerHTML = `
+        <div class="not-found" style="padding-top:5rem">
+          <div style="font-size:4rem">🔍</div>
+          <h2 style="font-family:var(--font-display);font-size:2rem">Project not found</h2>
+          <p style="color:var(--color-text-secondary)">This project doesn't exist or was removed.</p>
+          <a href="index.html" class="btn-primary" style="margin-top:.5rem">← Back to Portfolio</a>
+        </div>`;
+        } else {
+            document.title = `${project.title} — ${ownerName}`;
+            const stats = getStats(project);
+            const ytId = getYouTubeId(project.videoUrl || '');
+            const watchUrl = project.videoUrl ? toWatchUrl(project.videoUrl) : '';
+            const thumbUrl = ytId ? `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg` : '';
+            const heroImg = project.image.includes('?')
+                ? project.image.replace(/w=\d+/, 'w=1400').replace(/h=\d+/, 'h=800')
+                : project.image + '?w=1400&h=800&fit=crop';
+
+            app.innerHTML = `
+        <!-- Hero -->
+        <div class="project-hero" style="padding-top:3.5rem">
+          <img src="${heroImg}" alt="${project.title}" class="project-hero-img" onerror="this.src='${project.image}'">
+          <div class="project-hero-overlay"></div>
+        </div>
+
+        <!-- Content -->
+        <div class="page-content">
+
+          <!-- Title -->
+          <div class="title-area">
+            <h1 class="project-title">${project.title}</h1>
+            <div class="tags-row">
+              ${project.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+            </div>
+          </div>
+
+          <!-- Overview -->
+          <div class="section">
+            <p class="section-label">Overview</p>
+            <p class="project-description">${project.description}</p>
+          </div>
+
+          <!-- Stats -->
+          <div class="section">
+            <div class="stats-row">
+              ${stats.map(s => `
+                <div class="stat-card">
+                  <div class="stat-value">${s.value}</div>
+                  <div class="stat-label">${s.label}</div>
+                </div>`).join('')}
+            </div>
+          </div>
+
+          <!-- Video (only if set) -->
+          ${project.videoUrl ? `
+          <div class="section">
+            <p class="section-label">Video Demo</p>
+            ${!ytId
+                        ? `<video
+                  src="${project.videoUrl}"
+                  controls
+                  style="width:100%;border-radius:1.5rem;border:1px solid rgba(255,255,255,0.08);display:block;background:#000;max-height:520px;">
+                  Your browser doesn't support HTML5 video.
+                </video>`
+                        : `<div class="video-thumb" id="video-container" onclick="playVideo('${ytId}')" title="Click to play">
+                  <img
+                    src="${thumbUrl || 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=1280&h=720&fit=crop'}"
+                    alt="${project.title} demo"
+                    onerror="this.src='https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=1280&h=720&fit=crop'"
+                  >
+                  <div class="video-thumb-overlay">
+                    <div class="play-btn">
+                      <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </div>
+                  </div>
+                  <span class="video-label">▶ Click to play</span>
+                </div>`
+                    }
+          </div>` : ''}
+
+          <!-- Tech Stack -->
+          <div class="section">
+            <p class="section-label">Tech Stack</p>
+            <div class="tech-grid">
+              ${project.tags.map(t => `<span class="tech-pill">${t}</span>`).join('')}
+            </div>
+          </div>
+
+          <!-- CTA -->
+          <div class="section">
+            <div class="cta-row">
+              ${project.link && project.link !== '#'
+                    ? `<a href="${project.link}" target="_blank" rel="noopener" class="btn-primary">
+                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                     Visit Live Project
+                   </a>`
+                    : `<button class="btn-primary" onclick="alert('Live link coming soon!')">
+                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                     Visit Live Project
+                   </button>`}
+              <a href="index.html" class="btn-secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                All Projects
+              </a>
+            </div>
+          </div>
+
+        </div>`;
+        }
+
+        // Click-to-play: replaces thumbnail with iframe on click
+        function playVideo(id) {
+            const container = document.getElementById('video-container');
+            if (!container) return;
+            // Remove border-radius overflow clip so iframe fills naturally
+            container.style.cssText = 'width:100%;aspect-ratio:16/9;border-radius:1.5rem;overflow:hidden;border:1px solid rgba(255,255,255,0.08)';
+            container.innerHTML = `
+                <iframe
+                    src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1"
+                    allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                    style="width:100%;height:100%;border:none;display:block">
+                </iframe>`;
+        }
+    </script>
+
+</body>
+
+</html>

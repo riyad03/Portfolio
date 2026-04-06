@@ -1,10 +1,29 @@
+// ==================== DEBUGGING ====================
+function debugLog(msg, color = '#0f0') {
+  const consoleEl = document.getElementById('debug-console');
+  if (consoleEl) {
+    consoleEl.style.display = 'block';
+    const entry = document.createElement('div');
+    entry.style.color = color;
+    entry.innerHTML = `[${new Date().toLocaleTimeString()}] ${msg}`;
+    consoleEl.appendChild(entry);
+    consoleEl.scrollTop = consoleEl.scrollHeight;
+  }
+}
+
+window.onerror = function (msg, url, line) {
+  debugLog("CRITICAL ERROR: " + msg + " at " + line, '#f00');
+  return false;
+};
+debugLog('Portfolio Script initialized.');
+
 // ==================== DATA MODEL ====================
 const defaultData = {
   hero: {
-    name: 'Your Name',
+    name: 'Riyad Rachidi',
     title: 'Full Stack Developer',
     bio: 'Passionate about creating beautiful and functional web experiences. Specializing in modern web technologies and user-centric design.',
-    image: 'https://ui-avatars.com/api/?name=Portfolio&size=180&background=6366f1&color=fff&bold=true'
+    image: 'profile.png'
   },
   about: {
     text: "I'm a passionate developer with a love for creating innovative solutions. With years of experience in web development, I specialize in building responsive, user-friendly applications that solve real-world problems.",
@@ -16,21 +35,40 @@ const defaultData = {
       description: 'A modern e-commerce solution with real-time inventory management and secure payment processing.',
       image: 'https://images.unsplash.com/photo-1557821552-17105176677c?w=400&h=300&fit=crop',
       tags: ['React', 'Node.js', 'MongoDB'],
-      link: '#'
+      link: '#',
+      videoUrl: ''
     },
     {
       title: 'Task Management App',
       description: 'Collaborative task management tool with real-time updates and team synchronization.',
       image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop',
       tags: ['Vue.js', 'Firebase', 'Tailwind'],
-      link: '#'
+      link: '#',
+      videoUrl: ''
     },
     {
       title: 'Analytics Dashboard',
       description: 'Data visualization dashboard with interactive charts and real-time metrics tracking.',
       image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
       tags: ['React', 'D3.js', 'Express'],
-      link: '#'
+      link: '#',
+      videoUrl: ''
+    },
+    {
+      title: 'AgriTech Smart Farming',
+      description: 'An intelligent agriculture platform leveraging IoT sensors and AI to optimize crop yields, monitor soil health, and automate irrigation systems.',
+      image: 'https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=400&h=300&fit=crop',
+      tags: ['IoT', 'Python', 'Machine Learning'],
+      link: '#',
+      videoUrl: ''
+    },
+    {
+      title: 'Crypto Finance Dashboard',
+      description: 'A real-time cryptocurrency and financial analytics platform with portfolio tracking, live market data, and AI-powered trading insights.',
+      image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&h=300&fit=crop',
+      tags: ['React', 'Web3.js', 'Node.js'],
+      link: '#',
+      videoUrl: ''
     }
   ],
   skills: [
@@ -58,7 +96,11 @@ const defaultData = {
       experience: false,
       videos: false
     },
-    sectionOrder: ['hero', 'about', 'projects', 'skills', 'contact'] // Default order
+    sectionOrder: ['hero', 'about', 'projects', 'skills', 'contact'], // Default order
+    cloudSettings: {
+      cloudName: '',
+      uploadPreset: ''
+    }
   }
 };
 
@@ -69,13 +111,19 @@ let isAuthenticated = false;
 // Load data from localStorage
 function loadData() {
   const saved = localStorage.getItem('portfolioData');
-  if (saved) {
+  const savedVersion = localStorage.getItem('portfolioDataVersion');
+  const currentVersion = 'v5';
+  if (saved && savedVersion === currentVersion) {
     try {
       portfolioData = JSON.parse(saved);
     } catch (e) {
       console.error('Error loading data:', e);
-      portfolioData = { ...defaultData };
+      portfolioData = JSON.parse(JSON.stringify(defaultData));
     }
+  } else {
+    // Reset to new defaults when version changes
+    portfolioData = JSON.parse(JSON.stringify(defaultData));
+    localStorage.setItem('portfolioDataVersion', currentVersion);
   }
 }
 
@@ -114,7 +162,7 @@ function renderProjects() {
         <div class="project-tags">
           ${project.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
         </div>
-        <a href="${project.link}" class="project-link">View Project →</a>
+        <a href="project.html?index=${index}" class="project-link">View Project →</a>
       </div>
     `;
     grid.appendChild(card);
@@ -294,6 +342,11 @@ function populateAdminForm() {
   document.getElementById('edit-linkedin').value = portfolioData.contact.linkedin;
   document.getElementById('edit-github').value = portfolioData.contact.github;
 
+  // Cloud Settings
+  const cloud = portfolioData.settings?.cloudSettings || {};
+  document.getElementById('edit-cloud-name').value = cloud.cloudName || '';
+  document.getElementById('edit-upload-preset').value = cloud.uploadPreset || '';
+
   // Section visibility toggles
   const sections = portfolioData.settings?.sectionsVisible || {};
   document.getElementById('toggle-certifications').checked = sections.certifications || false;
@@ -361,6 +414,25 @@ function renderProjectsEditor() {
         <label class="form-label">Link</label>
         <input type="text" class="form-input project-link-input" data-index="${index}" value="${project.link}">
       </div>
+      <div class="form-group">
+        <label class="form-label">🎬 Video Demo (Cloud Upload)</label>
+        <div class="video-status-area" style="margin-bottom:0.5rem;">
+          ${project.videoUrl
+        ? `<div style="display:flex;align-items:center;padding:0.6rem;background:rgba(99,102,241,0.06);border:1px solid var(--glass-border);border-radius:0.5rem;">
+                <span style="font-size:0.8rem;color:var(--color-text-muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${project.videoUrl}</span>
+                <button type="button" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:0.8rem;margin-left:0.5rem;" onclick="clearProjectVideo(${index})">✕ Remove</button>
+               </div>`
+        : '<span style="font-size:0.8rem;color:var(--color-text-muted);">No video attached.</span>'
+      }
+        </div>
+        <input type="file" accept="video/*" class="form-input" style="padding:0.5rem;font-size:0.85rem;cursor:pointer;"
+          data-index="${index}" onchange="handleVideoUpload(this, ${index})">
+        <p style="font-size:0.75rem;color:var(--color-text-muted);margin:0.4rem 0 0.25rem;">— or paste a Direct link / YouTube URL —</p>
+        <input type="text" class="form-input project-video-input" data-index="${index}"
+          value="${project.videoUrl || ''}"
+          placeholder="https://youtu.be/..." onchange="portfolioData.projects[${index}].videoUrl = this.value">
+        <p style="font-size:0.75rem;color:var(--color-text-muted);margin-top:0.3rem;">Video will be uploaded to your Cloudinary account.</p>
+      </div>
       <button class="btn-remove" onclick="removeProject(${index})">Remove Project</button>
     `;
     editor.appendChild(projectDiv);
@@ -399,13 +471,95 @@ function addProject() {
     description: 'Project description',
     image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop',
     tags: ['Tag1', 'Tag2'],
-    link: '#'
+    link: '#',
+    videoUrl: ''
   });
   renderProjectsEditor();
 }
 
 function removeProject(index) {
   portfolioData.projects.splice(index, 1);
+  renderProjectsEditor();
+}
+
+async function handleVideoUpload(input, index) {
+  const file = (input.files && input.files[0]) || (input.target && input.target.files && input.target.files[0]);
+  if (!file) return;
+
+  // Check for file:// protocol which blocks fetch
+  if (window.location.protocol === 'file:') {
+    const errorMsg = 'Browser Security: Cloud uploads are blocked when opening index.html directly as a file. Please use a "Live Server" or deploy your site to test this.';
+    debugLog(errorMsg, '#f97316');
+    alert(errorMsg);
+    input.value = '';
+    return;
+  }
+
+  debugLog('Upload triggered for: ' + file.name);
+
+  // Read settings from data model or directly from input if not saved yet
+  const cloudName = document.getElementById('edit-cloud-name')?.value?.trim() || portfolioData.settings?.cloudSettings?.cloudName;
+  const uploadPreset = document.getElementById('edit-upload-preset')?.value?.trim() || portfolioData.settings?.cloudSettings?.uploadPreset;
+
+  if (!cloudName || !uploadPreset) {
+    debugLog(`ERROR: Missing ${!cloudName ? 'Cloud Name' : ''} ${!cloudName && !uploadPreset ? 'and ' : ''} ${!uploadPreset ? 'Upload Preset' : ''}`, '#f00');
+    alert('Please enter your Cloud Name and Upload Preset in the "Cloud Storage" section of the Admin Panel first!');
+    input.value = '';
+    return;
+  }
+
+  // Create a status container if it doesn't exist
+  let statusBadge = event.target.parentElement.querySelector('.upload-status');
+  if (!statusBadge) {
+    statusBadge = document.createElement('div');
+    statusBadge.className = 'upload-status';
+    statusBadge.style.fontSize = '0.78rem';
+    statusBadge.style.marginTop = '0.5rem';
+    event.target.parentElement.appendChild(statusBadge);
+  }
+
+  statusBadge.innerHTML = '<span style="color:#6366f1;">⏳ Preparing upload...</span>';
+  event.target.disabled = true;
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', uploadPreset);
+
+  try {
+    statusBadge.innerHTML = '<span style="color:#6366f1;">⏳ Sending to Cloudinary...</span>';
+
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/video/upload`, {
+      method: 'POST',
+      body: formData
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      debugLog('UPLOAD SUCCESS: ' + data.secure_url);
+      portfolioData.projects[index].videoUrl = data.secure_url;
+      statusBadge.innerHTML = '<span style="color:#10b981;">✅ Upload successful!</span>';
+
+      const urlInput = document.querySelector(`.project-video-input[data-index="${index}"]`);
+      if (urlInput) urlInput.value = data.secure_url;
+
+      saveData();
+      renderAll();
+    } else {
+      const errMsg = data.error?.message || 'Check your settings.';
+      debugLog('CLOUD ERROR: ' + errMsg, '#f00');
+      statusBadge.innerHTML = `<span style="color:#ef4444;">❌ Error: ${errMsg}</span>`;
+      event.target.disabled = false;
+    }
+  } catch (err) {
+    debugLog('NETWORK ERROR: ' + err.message, '#f00');
+    statusBadge.innerHTML = '<span style="color:#ef4444;">❌ Network error. Check connection.</span>';
+    event.target.disabled = false;
+  }
+}
+
+function clearProjectVideo(index) {
+  portfolioData.projects[index].videoUrl = '';
   renderProjectsEditor();
 }
 
@@ -593,6 +747,13 @@ function collectFormData() {
   portfolioData.contact.linkedin = document.getElementById('edit-linkedin').value;
   portfolioData.contact.github = document.getElementById('edit-github').value;
 
+  // Cloud Settings
+  if (!portfolioData.settings) portfolioData.settings = {};
+  portfolioData.settings.cloudSettings = {
+    cloudName: document.getElementById('edit-cloud-name').value.trim(),
+    uploadPreset: document.getElementById('edit-upload-preset').value.trim()
+  };
+
   // Projects
   portfolioData.projects.forEach((project, index) => {
     project.title = document.querySelector(`.project-title-input[data-index="${index}"]`).value;
@@ -600,6 +761,14 @@ function collectFormData() {
     project.image = document.querySelector(`.project-image-input[data-index="${index}"]`).value;
     project.tags = document.querySelector(`.project-tags-input[data-index="${index}"]`).value.split(',').map(t => t.trim());
     project.link = document.querySelector(`.project-link-input[data-index="${index}"]`).value;
+    // If a URL was typed, use it; if field is empty and there's already a data: URL, keep it
+    const urlVal = document.querySelector(`.project-video-input[data-index="${index}"]`)?.value?.trim() || '';
+    if (urlVal) {
+      project.videoUrl = urlVal; // YouTube / external URL takes priority
+    } else if (!project.videoUrl?.startsWith('data:')) {
+      project.videoUrl = ''; // clear if neither file nor URL
+    }
+    // (if project.videoUrl is already a data: URL from handleVideoUpload, leave it untouched)
   });
 
   // Skills
@@ -800,3 +969,5 @@ window.removeSkill = removeSkill;
 window.removeCertification = removeCertification;
 window.removeExperience = removeExperience;
 window.removeVideo = removeVideo;
+window.handleVideoUpload = handleVideoUpload;
+window.clearProjectVideo = clearProjectVideo;
