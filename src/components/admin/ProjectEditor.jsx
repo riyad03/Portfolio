@@ -10,46 +10,14 @@ const ProjectEditor = ({ portfolioData, projectIndex, updateData, onClose }) => 
 
     const MAX_VIDEO_SIZE_MB = 100;
 
-    // Fetch Cloudinary config from environment variables or API
+    // Cloudinary config - hardcoded because Vercel isn't passing env vars to Vite build
     useEffect(() => {
-        const fetchCloudinaryConfig = async () => {
-            // First priority: Environment variables (for both local and production)
-            const envCloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-            const envUploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
-
-            if (envCloudName && envUploadPreset) {
-                console.log('✅ Cloudinary config loaded from environment variables!');
-                setCloudinaryConfig({
-                    cloudName: envCloudName,
-                    uploadPreset: envUploadPreset
-                });
-                return;
-            }
-
-            // Second priority: Try Vercel API route (production)
-            try {
-                const response = await fetch('/api/cloudinary-config');
-                const data = await response.json();
-                if (response.ok && data.cloudName && data.uploadPreset) {
-                    console.log('✅ Cloudinary config loaded from API!');
-                    setCloudinaryConfig(data);
-                    return;
-                }
-            } catch (err) {
-                console.warn('Cloudinary API not available');
-            }
-
-            // Third priority: Portfolio settings (fallback)
-            const localSettings = portfolioData.settings.cloudSettings;
-            if (localSettings && localSettings.cloudName && localSettings.uploadPreset) {
-                console.log('✅ Cloudinary config loaded from portfolio settings');
-                setCloudinaryConfig(localSettings);
-            } else {
-                console.error('❌ Cloudinary config not found in environment variables, API, or portfolio settings');
-            }
-        };
-        fetchCloudinaryConfig();
-    }, [portfolioData.settings.cloudSettings]);
+        console.log('✅ Cloudinary config loaded (hardcoded) in ProjectEditor');
+        setCloudinaryConfig({
+            cloudName: 'dl8d3sjqx',
+            uploadPreset: 'ml_default'
+        });
+    }, []);
 
     const handleChange = (field, value) => {
         setFormData(prev => ({
