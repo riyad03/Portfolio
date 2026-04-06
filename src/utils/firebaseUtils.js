@@ -11,25 +11,45 @@ const PORTFOLIO_DOC_ID = 'main'; // Single document for portfolio data
  * @returns {Promise<Object>} Portfolio data
  */
 export const getPortfolioData = async () => {
+    console.log('🔵 [Firebase] Starting getPortfolioData...');
+    console.log('🔵 [Firebase] Firebase db object:', db ? 'initialized' : 'NOT INITIALIZED');
+
     try {
+        console.log('🔵 [Firebase] Creating document reference...');
         const docRef = doc(db, PORTFOLIO_COLLECTION, PORTFOLIO_DOC_ID);
+        console.log('🔵 [Firebase] Fetching document from:', docRef.path);
+
         const docSnap = await getDoc(docRef);
+        console.log('🔵 [Firebase] Document fetch complete. Exists?', docSnap.exists());
 
         if (docSnap.exists()) {
-            return docSnap.data();
+            const data = docSnap.data();
+            console.log('✅ [Firebase] Portfolio data loaded from Firestore!');
+            console.log('✅ [Firebase] Last updated:', data.lastUpdated);
+            console.log('✅ [Firebase] Data keys:', Object.keys(data));
+            return data;
         } else {
-            console.log('No portfolio data found in Firestore, using default data');
+            console.warn('⚠️ [Firebase] No portfolio data found in Firestore');
+            console.log('🔵 [Firebase] Initializing with default data...');
             // Initialize with default data if none exists
             await setPortfolioData(defaultData);
             return defaultData;
         }
     } catch (error) {
-        console.error('Error fetching portfolio data from Firestore:', error);
+        console.error('❌ [Firebase] Error fetching portfolio data from Firestore!');
+        console.error('❌ [Firebase] Error type:', error.constructor.name);
+        console.error('❌ [Firebase] Error code:', error.code);
+        console.error('❌ [Firebase] Error message:', error.message);
+        console.error('❌ [Firebase] Full error:', error);
+
         // Fallback to localStorage if Firebase fails
+        console.warn('⚠️ [Firebase] Falling back to localStorage...');
         const localData = localStorage.getItem('portfolioData');
         if (localData) {
+            console.log('✅ [Firebase] Loaded from localStorage');
             return JSON.parse(localData);
         }
+        console.warn('⚠️ [Firebase] Using default data');
         return defaultData;
     }
 };
@@ -40,20 +60,41 @@ export const getPortfolioData = async () => {
  * @returns {Promise<void>}
  */
 export const setPortfolioData = async (data) => {
+    console.log('🟢 [Firebase] Starting setPortfolioData...');
+    console.log('🟢 [Firebase] Collection:', PORTFOLIO_COLLECTION, 'Document:', PORTFOLIO_DOC_ID);
+    console.log('🟢 [Firebase] Firebase db object:', db ? 'initialized' : 'NOT INITIALIZED');
+
     try {
+        console.log('🟢 [Firebase] Creating document reference...');
         const docRef = doc(db, PORTFOLIO_COLLECTION, PORTFOLIO_DOC_ID);
-        await setDoc(docRef, {
+        console.log('🟢 [Firebase] Document reference created:', docRef.path);
+
+        const dataToSave = {
             ...data,
             lastUpdated: new Date().toISOString()
-        });
-        console.log('Portfolio data saved to Firestore successfully');
+        };
+
+        console.log('🟢 [Firebase] Calling setDoc with data...');
+        console.log('🟢 [Firebase] Data size:', JSON.stringify(dataToSave).length, 'characters');
+
+        await setDoc(docRef, dataToSave);
+
+        console.log('✅✅✅ [Firebase] Portfolio data saved to Firestore successfully! ✅✅✅');
 
         // Also save to localStorage as backup
         localStorage.setItem('portfolioData', JSON.stringify(data));
+        console.log('✅ [Firebase] Also saved to localStorage as backup');
     } catch (error) {
-        console.error('Error saving portfolio data to Firestore:', error);
+        console.error('❌❌❌ [Firebase] Error saving portfolio data to Firestore! ❌❌❌');
+        console.error('❌ [Firebase] Error type:', error.constructor.name);
+        console.error('❌ [Firebase] Error code:', error.code);
+        console.error('❌ [Firebase] Error message:', error.message);
+        console.error('❌ [Firebase] Full error:', error);
+
         // Fallback to localStorage if Firebase fails
         localStorage.setItem('portfolioData', JSON.stringify(data));
+        console.warn('⚠️ [Firebase] Saved to localStorage as fallback');
+
         throw error;
     }
 };

@@ -113,7 +113,13 @@ const AdminPanel = ({ portfolioData, updateData, onClose }) => {
     };
 
     const handleSave = () => {
+        console.log('🟡 [AdminPanel] Save button clicked!');
+        console.log('🟡 [AdminPanel] Form data to save:', formData);
+        console.log('🟡 [AdminPanel] Calling updateData...');
+
         updateData(formData);
+
+        console.log('🟡 [AdminPanel] updateData called (async - will complete in background)');
         alert('Portfolio updated successfully!');
         onClose();
     };

@@ -57,16 +57,25 @@ export const usePortfolio = () => {
 
     // Update data both in Firebase and local state
     const updateData = async (newData) => {
+        console.log('🔵 [usePortfolio] Starting updateData...');
+        console.log('🔵 [usePortfolio] Data to save:', newData);
+
         try {
+            console.log('🔵 [usePortfolio] Calling setPortfolioData...');
             await setPortfolioData(newData);
+            console.log('✅ [usePortfolio] setPortfolioData completed successfully!');
+
             setPortfolioDataState(newData);
             setError(null);
+            console.log('✅ [usePortfolio] Local state updated');
         } catch (err) {
-            console.error('Error updating portfolio data:', err);
+            console.error('❌ [usePortfolio] Error updating portfolio data:', err);
+            console.error('❌ [usePortfolio] Error details:', err.message, err.code);
             setError(err.message);
 
             // Still update local state even if Firebase fails
             setPortfolioDataState(newData);
+            console.warn('⚠️ [usePortfolio] Updated local state despite Firebase error');
             // localStorage is handled in setPortfolioData as fallback
         }
     };
