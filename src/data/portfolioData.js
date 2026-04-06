@@ -114,8 +114,8 @@ export const defaultData = {
         },
         sectionOrder: ['hero', 'about', 'projects', 'skills', 'contact'],
         cloudSettings: {
-            cloudName: '',
-            uploadPreset: ''
+            cloudName: 'dl8d3sjqx',
+            uploadPreset: 'ml_default'
         }
     }
 };

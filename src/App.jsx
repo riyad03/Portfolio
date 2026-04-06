@@ -29,22 +29,43 @@ function App() {
 
   const toggleChat = () => setIsChatOpen(!isChatOpen);
 
+  const handleAuthenticated = () => {
+    setIsAdminMode(true);
+    setShowAuth(false);
+  };
+
+  const startProjectEdit = (index) => {
+    setEditingProjectIndex(index);
+    if (!isAdminMode) {
+      setShowAuth(true);
+    }
+  };
+
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.ctrlKey && e.shiftKey && e.key === 'E') {
+      // Check for Ctrl+Shift+E (support both uppercase and lowercase)
+      if (e.ctrlKey && e.shiftKey && (e.key === 'E' || e.key === 'e' || e.code === 'KeyE')) {
         e.preventDefault();
+        e.stopPropagation();
+        console.log('🔧 Admin shortcut triggered!');
+        console.log('Current path:', window.location.pathname);
+
         const projectMatch = window.location.pathname.match(/\/project\/(\d+)/);
         if (projectMatch) {
           const index = parseInt(projectMatch[1], 10);
+          console.log('Opening project editor for project #', index);
           startProjectEdit(index);
         } else {
+          console.log('Opening main admin panel');
           setShowAuth(true);
         }
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isAdminMode]); // Added isAdminMode to dependencies if needed, or keep it empty if startProjectEdit is stable
+
+    // Add to document instead of window for better compatibility
+    document.addEventListener('keydown', handleKeyDown, true);
+    return () => document.removeEventListener('keydown', handleKeyDown, true);
+  }, [isAdminMode]);
 
   // Loading state
   if (loading) {
@@ -66,18 +87,6 @@ function App() {
   if (error) {
     console.warn('Portfolio loaded with fallback data:', error);
   }
-
-  const handleAuthenticated = () => {
-    setIsAdminMode(true);
-    setShowAuth(false);
-  };
-
-  const startProjectEdit = (index) => {
-    setEditingProjectIndex(index);
-    if (!isAdminMode) {
-      setShowAuth(true);
-    }
-  };
 
   return (
     <Router>

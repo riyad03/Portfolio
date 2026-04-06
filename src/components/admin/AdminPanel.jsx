@@ -12,25 +12,23 @@ const AdminPanel = ({ portfolioData, updateData, onClose }) => {
     // Fetch Cloudinary config from Vercel environment variables
     useEffect(() => {
         const fetchCloudinaryConfig = async () => {
+            // First, try to use settings from portfolio data (saved in Firebase/localStorage)
+            const localSettings = formData.settings.cloudSettings;
+            if (localSettings.cloudName && localSettings.uploadPreset) {
+                setCloudinaryConfig(localSettings);
+                return;
+            }
+
+            // For production, try to fetch from Vercel API route
             try {
                 const response = await fetch('/api/cloudinary-config');
                 const data = await response.json();
                 if (response.ok && data.cloudName && data.uploadPreset) {
                     setCloudinaryConfig(data);
-                } else {
-                    // Fallback to localStorage settings
-                    const localSettings = formData.settings.cloudSettings;
-                    if (localSettings.cloudName && localSettings.uploadPreset) {
-                        setCloudinaryConfig(localSettings);
-                    }
                 }
             } catch (err) {
-                console.error('Failed to fetch Cloudinary config:', err);
-                // Fallback to localStorage settings
-                const localSettings = formData.settings.cloudSettings;
-                if (localSettings.cloudName && localSettings.uploadPreset) {
-                    setCloudinaryConfig(localSettings);
-                }
+                console.warn('Cloudinary config not available from API (normal in dev mode)');
+                // This is expected in local development - user can set it in admin settings
             }
         };
         fetchCloudinaryConfig();

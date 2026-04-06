@@ -10,28 +10,26 @@ const ProjectEditor = ({ portfolioData, projectIndex, updateData, onClose }) => 
 
     const MAX_VIDEO_SIZE_MB = 100;
 
-    // Fetch Cloudinary config from Vercel environment variables
+    // Fetch Cloudinary config from settings
     useEffect(() => {
         const fetchCloudinaryConfig = async () => {
+            // First, try to use settings from portfolio data (saved in Firebase/localStorage)
+            const localSettings = portfolioData.settings.cloudSettings;
+            if (localSettings.cloudName && localSettings.uploadPreset) {
+                setCloudinaryConfig(localSettings);
+                return;
+            }
+
+            // For production, try to fetch from Vercel API route
             try {
                 const response = await fetch('/api/cloudinary-config');
                 const data = await response.json();
                 if (response.ok && data.cloudName && data.uploadPreset) {
                     setCloudinaryConfig(data);
-                } else {
-                    // Fallback to localStorage settings
-                    const localSettings = portfolioData.settings.cloudSettings;
-                    if (localSettings.cloudName && localSettings.uploadPreset) {
-                        setCloudinaryConfig(localSettings);
-                    }
                 }
             } catch (err) {
-                console.error('Failed to fetch Cloudinary config:', err);
-                // Fallback to localStorage settings
-                const localSettings = portfolioData.settings.cloudSettings;
-                if (localSettings.cloudName && localSettings.uploadPreset) {
-                    setCloudinaryConfig(localSettings);
-                }
+                // Silent fail - this is expected in local development
+                console.warn('Cloudinary config not available from API (normal in dev mode)');
             }
         };
         fetchCloudinaryConfig();
