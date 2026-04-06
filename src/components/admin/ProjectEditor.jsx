@@ -28,6 +28,39 @@ const ProjectEditor = ({ portfolioData, projectIndex, updateData, onClose }) => 
         alert('Project updated successfully!');
     };
 
+    const handleImageUpload = async (file) => {
+        if (!file) return;
+
+        const { cloudName, uploadPreset } = portfolioData.settings.cloudSettings;
+        if (!cloudName || !uploadPreset) {
+            setUploadError('Cloudinary config missing in Global Settings!');
+            return;
+        }
+
+        setUploading(true);
+        setUploadError(null);
+        const data = new FormData();
+        data.append('file', file);
+        data.append('upload_preset', uploadPreset);
+
+        try {
+            const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+                method: 'POST',
+                body: data
+            });
+            const result = await response.json();
+            if (response.ok) {
+                handleChange('image', result.secure_url);
+            } else {
+                setUploadError('Upload failed: ' + (result.error?.message || 'Check your Cloudinary settings.'));
+            }
+        } catch (err) {
+            setUploadError('Network error. Check your connection or Cloudinary URL.');
+        } finally {
+            setUploading(false);
+        }
+    };
+
     const handleVideoUpload = async (file) => {
         if (!file) return;
 
@@ -62,7 +95,7 @@ const ProjectEditor = ({ portfolioData, projectIndex, updateData, onClose }) => 
         } catch (err) {
             setUploadError('Network error. Check your connection or Cloudinary URL.');
         } finally {
-            setUploading(null);
+            setUploading(false);
         }
     };
 
@@ -84,8 +117,31 @@ const ProjectEditor = ({ portfolioData, projectIndex, updateData, onClose }) => 
                     />
                 </div>
 
+                <div className="form-group" style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.05)' }}>
+                    <label className="form-label" style={{ color: 'var(--color-accent-primary)' }}>Main Project Image</label>
+                    <input type="file" accept="image/*" className="form-input" style={{ marginBottom: '0.5rem' }} onChange={(e) => handleImageUpload(e.target.files[0])} />
+
+                    {formData.image && (
+                        <div className="image-preview-admin" style={{ marginBottom: '0.5rem', borderRadius: '0.8rem', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', background: '#000' }}>
+                            <img src={formData.image} alt="Preview" style={{ width: '100%', display: 'block', maxHeight: '150px', objectFit: 'cover' }} />
+                        </div>
+                    )}
+                    <input type="text" className="form-input" value={formData.image} placeholder="Or Paste Image URL" onChange={(e) => handleChange('image', e.target.value)} />
+                </div>
+
                 <div className="form-group">
-                    <label className="form-label">Description (Detail Page)</label>
+                    <label className="form-label">Short Description (for Cards)</label>
+                    <textarea
+                        className="form-textarea"
+                        value={formData.shortDescription || ''}
+                        onChange={(e) => handleChange('shortDescription', e.target.value)}
+                        placeholder="A brief teaser for the project card..."
+                        style={{ height: '80px' }}
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label className="form-label">Detailed Description (Detail Page)</label>
                     <textarea
                         className="form-textarea"
                         value={formData.description}

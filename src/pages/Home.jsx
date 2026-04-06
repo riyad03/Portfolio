@@ -9,13 +9,13 @@ import Certifications from '../components/Certifications';
 import Experience from '../components/Experience';
 import Videos from '../components/Videos';
 
-const Home = ({ portfolioData }) => {
+const Home = ({ portfolioData, onChatToggle }) => {
     const { hero, about, projects, skills, contact, certifications, experience, videos, customSections, settings } = portfolioData;
     const { sectionsVisible } = settings;
 
     return (
         <main>
-            <Hero hero={hero} />
+            <Hero hero={hero} onChatToggle={onChatToggle} />
             <About about={about} />
             <Projects projects={projects} />
 

@@ -12,6 +12,7 @@ export const defaultData = {
     projects: [
         {
             title: 'E-Commerce Platform',
+            shortDescription: 'Modern e-commerce solution with real-time inventory.',
             description: 'A modern e-commerce solution with real-time inventory management and secure payment processing.',
             image: 'https://images.unsplash.com/photo-1557821552-17105176677c?w=400&h=300&fit=crop',
             tags: ['React', 'Node.js', 'MongoDB'],
@@ -26,6 +27,7 @@ export const defaultData = {
         },
         {
             title: 'Task Management App',
+            shortDescription: 'Collaborative task tool with real-time team sync.',
             description: 'Collaborative task management tool with real-time updates and team synchronization.',
             image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop',
             tags: ['Vue.js', 'Firebase', 'Tailwind'],
@@ -40,6 +42,7 @@ export const defaultData = {
         },
         {
             title: 'Analytics Dashboard',
+            shortDescription: 'Data visualization with interactive D3.js charts.',
             description: 'Data visualization dashboard with interactive charts and real-time metrics tracking.',
             image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
             tags: ['React', 'D3.js', 'Express'],
@@ -54,6 +57,7 @@ export const defaultData = {
         },
         {
             title: 'AgriTech Smart Farming',
+            shortDescription: 'IoT-powered intelligent agriculture platform.',
             description: 'An intelligent agriculture platform leveraging IoT sensors and AI to optimize crop yields, monitor soil health, and automate irrigation systems.',
             image: 'https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=400&h=300&fit=crop',
             tags: ['IoT', 'Python', 'Machine Learning'],
@@ -68,6 +72,7 @@ export const defaultData = {
         },
         {
             title: 'Crypto Finance Dashboard',
+            shortDescription: 'Real-time financial analytics and portfolio tracking.',
             description: 'A real-time cryptocurrency and financial analytics platform with portfolio tracking, live market data, and AI-powered trading insights.',
             image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&h=300&fit=crop',
             tags: ['React', 'Web3.js', 'Node.js'],

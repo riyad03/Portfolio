@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const ChatBot = ({ portfolioData }) => {
-    const [isOpen, setIsOpen] = useState(false);
+const ChatBot = ({ portfolioData, isOpen, onToggle }) => {
     const [isTyping, setIsTyping] = useState(false);
     const [messages, setMessages] = useState([
         { type: 'bot', text: "Hi! I'm your AI recruitment assistant. I've studied your portfolio—ask me anything about your skills or projects!" }
@@ -69,7 +68,7 @@ const ChatBot = ({ portfolioData }) => {
                             <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#4ade80', boxShadow: '0 0 10px #4ade80' }}></div>
                             <h3>AI Assistant</h3>
                         </div>
-                        <button onClick={() => setIsOpen(false)} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', fontSize: '1.2rem' }}>×</button>
+                        <button onClick={onToggle} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', fontSize: '1.2rem' }}>×</button>
                     </div>
                     <div className="chatbot-messages">
                         {messages.map((m, i) => (
@@ -115,7 +114,7 @@ const ChatBot = ({ portfolioData }) => {
                 </div>
             )}
 
-            <div className="chatbot-bubble" onClick={() => setIsOpen(!isOpen)}>
+            <div className="chatbot-bubble" onClick={onToggle}>
                 {isOpen ? (
                     <svg viewBox="0 0 24 24" width="30" height="30" fill="#fff"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" /></svg>
                 ) : (

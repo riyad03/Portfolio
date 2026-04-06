@@ -25,17 +25,26 @@ function App() {
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [editingProjectIndex, setEditingProjectIndex] = useState(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  const toggleChat = () => setIsChatOpen(!isChatOpen);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.ctrlKey && e.shiftKey && e.key === 'E') {
         e.preventDefault();
-        setShowAuth(true);
+        const projectMatch = window.location.pathname.match(/\/project\/(\d+)/);
+        if (projectMatch) {
+          const index = parseInt(projectMatch[1], 10);
+          startProjectEdit(index);
+        } else {
+          setShowAuth(true);
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [isAdminMode]); // Added isAdminMode to dependencies if needed, or keep it empty if startProjectEdit is stable
 
   if (!portfolioData) return <div>Loading...</div>;
 
@@ -62,7 +71,7 @@ function App() {
         />
 
         <Routes>
-          <Route path="/" element={<Home portfolioData={portfolioData} onEdit={() => setShowAuth(true)} />} />
+          <Route path="/" element={<Home portfolioData={portfolioData} onEdit={() => setShowAuth(true)} onChatToggle={toggleChat} />} />
           <Route path="/project/:index" element={<ProjectDetail portfolioData={portfolioData} onEdit={(idx) => startProjectEdit(idx)} />} />
         </Routes>
 
@@ -92,7 +101,11 @@ function App() {
             onClose={() => { setEditingProjectIndex(null); setIsAdminMode(false); }}
           />
         )}
-        <ChatBot portfolioData={portfolioData} />
+        <ChatBot
+          portfolioData={portfolioData}
+          isOpen={isChatOpen}
+          onToggle={toggleChat}
+        />
       </div>
     </Router>
   );
