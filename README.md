@@ -178,7 +178,7 @@ Portfolio/
 - **Styling**: CSS with custom properties
 - **Backend**: Vercel Serverless Functions
 - **Database**: Firebase Firestore
-- **Authentication**: Firebase Authentication
+- **Authentication**: Simple password-based (no Firebase Auth needed)
 - **Storage**: Cloudinary (images/videos)
 - **AI**: OpenAI GPT-4
 - **Deployment**: Vercel

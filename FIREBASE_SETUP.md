@@ -39,10 +39,10 @@ This guide will help you connect your portfolio to Firebase for data storage and
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Portfolio data - read by everyone, write by authenticated users only
+    // Portfolio data - read and write by everyone
+    // Note: In production, consider adding domain restrictions or other security measures
     match /portfolio/{document=**} {
-      allow read: if true;
-      allow write: if request.auth != null;
+      allow read, write: if true;
     }
   }
 }
@@ -50,22 +50,19 @@ service cloud.firestore {
 
 3. Click **"Publish"**
 
-## Step 4: Enable Firebase Authentication
+**Important:** These rules allow anyone to read and write data. This is fine for a personal portfolio with password protection in the admin panel. For additional security, consider:
+- Using Firebase App Check to restrict access to your domain only
+- Adding rate limiting rules
+- Implementing more sophisticated security rules
 
-1. In the Firebase Console, go to **"Build" > "Authentication"**
-2. Click **"Get started"**
-3. Go to the **"Sign-in method"** tab
-4. Enable **"Email/Password"** provider:
-   - Click on "Email/Password"
-   - Toggle **"Enable"** to ON
-   - Click **"Save"**
+## Step 4: Configure Admin Password (Optional)
 
-### Create Your Admin Account
+Since we're using simple password authentication instead of Firebase Auth, you can set your admin password in the portfolio settings:
 
-1. Go to the **"Users"** tab in Authentication
-2. Click **"Add user"**
-3. Enter your email and a secure password
-4. Click **"Add user"**
+1. Access your admin panel (Ctrl + Shift + E)
+2. Use the default password: `admin`
+3. Once logged in, you can change the password in the admin panel settings
+4. Your password is stored in Firestore with your portfolio data
 
 ## Step 5: Configure Environment Variables
 

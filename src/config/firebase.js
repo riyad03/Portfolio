@@ -1,6 +1,5 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
 
 // Your web app's Firebase configuration
 // Replace these with your actual Firebase project credentials
@@ -16,10 +15,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firestore
+// Initialize Firestore (for data storage only)
 export const db = getFirestore(app);
-
-// Initialize Firebase Authentication
-export const auth = getAuth(app);
 
 export default app;
