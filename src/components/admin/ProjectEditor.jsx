@@ -10,26 +10,42 @@ const ProjectEditor = ({ portfolioData, projectIndex, updateData, onClose }) => 
 
     const MAX_VIDEO_SIZE_MB = 100;
 
-    // Fetch Cloudinary config from settings
+    // Fetch Cloudinary config from environment variables or API
     useEffect(() => {
         const fetchCloudinaryConfig = async () => {
-            // First, try to use settings from portfolio data (saved in Firebase/localStorage)
-            const localSettings = portfolioData.settings.cloudSettings;
-            if (localSettings.cloudName && localSettings.uploadPreset) {
-                setCloudinaryConfig(localSettings);
+            // First priority: Environment variables (for both local and production)
+            const envCloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+            const envUploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+            if (envCloudName && envUploadPreset) {
+                console.log('✅ Cloudinary config loaded from environment variables!');
+                setCloudinaryConfig({
+                    cloudName: envCloudName,
+                    uploadPreset: envUploadPreset
+                });
                 return;
             }
 
-            // For production, try to fetch from Vercel API route
+            // Second priority: Try Vercel API route (production)
             try {
                 const response = await fetch('/api/cloudinary-config');
                 const data = await response.json();
                 if (response.ok && data.cloudName && data.uploadPreset) {
+                    console.log('✅ Cloudinary config loaded from API!');
                     setCloudinaryConfig(data);
+                    return;
                 }
             } catch (err) {
-                // Silent fail - this is expected in local development
-                console.warn('Cloudinary config not available from API (normal in dev mode)');
+                console.warn('Cloudinary API not available');
+            }
+
+            // Third priority: Portfolio settings (fallback)
+            const localSettings = portfolioData.settings.cloudSettings;
+            if (localSettings && localSettings.cloudName && localSettings.uploadPreset) {
+                console.log('✅ Cloudinary config loaded from portfolio settings');
+                setCloudinaryConfig(localSettings);
+            } else {
+                console.error('❌ Cloudinary config not found in environment variables, API, or portfolio settings');
             }
         };
         fetchCloudinaryConfig();
