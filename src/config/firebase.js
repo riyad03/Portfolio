@@ -1,26 +1,18 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
-// Log environment variables to debug (will be removed after verification)
-console.log('🔍 Firebase Config Check:');
-console.log('API Key:', import.meta.env.VITE_FIREBASE_API_KEY ? '✅ Loaded' : '❌ Missing');
-console.log('Project ID:', import.meta.env.VITE_FIREBASE_PROJECT_ID || '❌ MISSING');
-
-// Your web app's Firebase configuration
+// Firebase configuration
+// Using hardcoded values because Vercel isn't passing env vars to Vite build
 const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-    appId: import.meta.env.VITE_FIREBASE_APP_ID
+    apiKey: "AIzaSyDUrIhH-oVQMynnzFfFgxZFMs4OT67RY4E",
+    authDomain: "portfolio-81677.firebaseapp.com",
+    projectId: "portfolio-81677",
+    storageBucket: "portfolio-81677.firebasestorage.app",
+    messagingSenderId: "278183631348",
+    appId: "1:278183631348:web:1a73a4ec8ea80e66fe01a1"
 };
 
-// Validate config before initializing
-if (!firebaseConfig.projectId || firebaseConfig.projectId === 'undefined') {
-    console.error('❌ Firebase environment variables not loaded! Check Vercel env vars.');
-    console.error('Expected VITE_FIREBASE_PROJECT_ID but got:', firebaseConfig.projectId);
-}
+console.log('🔍 Firebase Config:', firebaseConfig.projectId);
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
