@@ -1,7 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Projects = ({ projects }) => {
+    const navigate = useNavigate();
+
+    const handleCardClick = (e, index) => {
+        // Only navigate on mobile if not clicking the button link
+        if (window.innerWidth <= 768 && !e.target.closest('.project-link')) {
+            navigate(`/project/${index}`);
+        }
+    };
+
     return (
         <section className="section" id="projects">
             <div className="container">
@@ -11,7 +20,11 @@ const Projects = ({ projects }) => {
                 </div>
                 <div className="projects-grid" id="projects-grid">
                     {projects.map((project, index) => (
-                        <div key={index} className="project-card glass">
+                        <div
+                            key={index}
+                            className="project-card glass"
+                            onClick={(e) => handleCardClick(e, index)}
+                        >
                             <img src={project.thumbnail || project.image} alt={project.title} className="project-image" />
                             <div className="project-content">
                                 <h3 className="project-title">{project.title}</h3>

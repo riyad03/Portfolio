@@ -19,6 +19,7 @@ export const defaultData = {
             link: '#',
             videoUrl: '',
             showStats: true,
+            liveProjectEnabled: true,
             stats: [
                 { value: '99.9%', label: 'Uptime' },
                 { value: 'Fast', label: 'Performance' },
@@ -34,6 +35,7 @@ export const defaultData = {
             link: '#',
             videoUrl: '',
             showStats: true,
+            liveProjectEnabled: true,
             stats: [
                 { value: '100+', label: 'Users Supported' },
                 { value: 'Real-time', label: 'Sync' },
@@ -49,6 +51,7 @@ export const defaultData = {
             link: '#',
             videoUrl: '',
             showStats: true,
+            liveProjectEnabled: true,
             stats: [
                 { value: '50+', label: 'Chart Types' },
                 { value: 'Real-time', label: 'Updates' },
@@ -64,6 +67,7 @@ export const defaultData = {
             link: '#',
             videoUrl: '',
             showStats: true,
+            liveProjectEnabled: true,
             stats: [
                 { value: '40%', label: 'Yield Increase' },
                 { value: '60%', label: 'Water Saved' },
@@ -79,6 +83,7 @@ export const defaultData = {
             link: '#',
             videoUrl: '',
             showStats: true,
+            liveProjectEnabled: true,
             stats: [
                 { value: '500+', label: 'Coins Tracked' },
                 { value: '< 1s', label: 'Data Latency' },
@@ -87,23 +92,44 @@ export const defaultData = {
         }
     ],
     skills: [
-        { name: 'JavaScript', level: 95, category: 'Frontend' },
-        { name: 'React', level: 90, category: 'Frontend' },
-        { name: 'Node.js', level: 85, category: 'Backend' },
-        { name: 'Python', level: 80, category: 'Backend' },
-        { name: 'CSS/SASS', level: 90, category: 'Frontend' },
-        { name: 'MongoDB', level: 75, category: 'Database' }
+        { name: 'Python', level: 95, category: 'AI Frameworks' },
+        { name: 'LangChain', level: 90, category: 'AI Frameworks' },
+        { name: 'LangGraph', level: 90, category: 'AI Frameworks' },
+        { name: 'LangSmith', level: 85, category: 'AI Tools' },
+        { name: 'LangFuse', level: 85, category: 'AI Tools' },
+        { name: 'OpenAI API', level: 95, category: 'AI Tools' },
+        { name: 'MCP (Model Context Protocol)', level: 88, category: 'AI Tools' },
+        { name: 'RAG Systems', level: 92, category: 'AI Frameworks' },
+        { name: 'TensorFlow', level: 85, category: 'Deep Learning' },
+        { name: 'PyTorch', level: 85, category: 'Deep Learning' },
+        { name: 'Machine Learning', level: 90, category: 'Machine Learning' },
+        { name: 'NLP', level: 88, category: 'NLP' }
     ],
     certifications: [],
     experience: [],
     videos: [],
     customSections: [],
     contact: {
-        email: 'your.email@example.com',
-        phone: '+1 234 567 8900',
-        linkedin: 'linkedin.com/in/yourprofile',
-        github: 'github.com/yourusername'
+        email: 'riyad@rachidi.dev',
+        phone: '+212 644450396',
+        linkedin: 'linkedin.com/in/riyad-rachidi/',
+        github: 'github.com/riyad03'
     },
+    chatbotContext: `You are an AI assistant representing Riyad Rachidi, a 23-year-old AI developer and consultant based in Morocco.
+
+Key background:
+- Specializes in building custom AI systems for startups and businesses
+- Works across industries: e-commerce, agriculture, finance, recruitment, and sales
+- Currently working at Syntax while taking on freelance projects
+- Focus on helping startups move faster with AI automation
+
+Your role:
+- Answer questions about Riyad's skills, experience, and projects professionally
+- Highlight relevant project experience when asked about specific domains
+- Be concise, helpful, and show expertise in AI/ML technologies
+- If asked about availability, mention he takes on freelance projects for the right fit
+
+Tone: Professional yet approachable, technical but accessible`,
     settings: {
         password: 'admin',
         highlightedProjectIndex: 0,

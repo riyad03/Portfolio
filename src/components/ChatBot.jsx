@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 const ChatBot = ({ portfolioData, isOpen, onToggle }) => {
     const [isTyping, setIsTyping] = useState(false);
     const [messages, setMessages] = useState([
-        { type: 'bot', text: "Hi! I'm your AI recruitment assistant. I've studied your portfolio—ask me anything about your skills or projects!" }
+        { type: 'bot', text: `Hi! I'm ${portfolioData.hero.name}'s AI assistant. I can answer questions about skills, projects, and experience. What would you like to know?` }
     ]);
     const [input, setInput] = useState('');
     const messagesEndRef = useRef(null);
@@ -53,10 +53,10 @@ const ChatBot = ({ portfolioData, isOpen, onToggle }) => {
     };
 
     const quickActions = [
-        "What are your top skills?",
-        "Do you have React experience?",
-        "Tell me about your IoT projects",
-        "Are you available for hire?"
+        "What AI technologies do you work with?",
+        "Tell me about your recent projects",
+        "Do you have experience with LangChain?",
+        "Are you available for freelance work?"
     ];
 
     return (

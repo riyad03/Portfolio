@@ -10,16 +10,29 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'OpenAI API Key not configured on server' });
     }
 
-    // Summarize portfolio for context injection
-    const context = `
-    You are a professional recruitment assistant for ${portfolioData.hero.name}.
-    ${portfolioData.hero.name} is a ${portfolioData.hero.title}.
-    Skills: ${portfolioData.skills.map(s => s.name).join(', ')}.
-    Projects: ${portfolioData.projects.map(p => `${p.title}: ${p.description}`).join('; ')}.
-    
-    Answer questions concisely and professionally based on this context. 
-    If a project detail matches the user's inquiry, highlight why ${portfolioData.hero.name} is a good fit.
-  `;
+    // Use custom chatbot context if provided, otherwise build default context
+    let context = portfolioData.chatbotContext;
+
+    if (!context) {
+        // Fallback to auto-generated context if none provided
+        context = `
+        You are a professional recruitment assistant for ${portfolioData.hero.name}.
+        ${portfolioData.hero.name} is a ${portfolioData.hero.title}.
+        Skills: ${portfolioData.skills.map(s => s.name).join(', ')}.
+        Projects: ${portfolioData.projects.map(p => `${p.title}: ${p.description}`).join('; ')}.
+
+        Answer questions concisely and professionally based on this context.
+        If a project detail matches the user's inquiry, highlight why ${portfolioData.hero.name} is a good fit.
+        `;
+    }
+
+    // Always append current portfolio data for reference
+    context += `\n\n=== Current Portfolio Data ===
+    Name: ${portfolioData.hero.name}
+    Title: ${portfolioData.hero.title}
+    Skills: ${portfolioData.skills.map(s => s.name).join(', ')}
+    Projects: ${portfolioData.projects.map(p => `${p.title}: ${p.description}`).join('; ')}
+    `;
 
     try {
         const response = await fetch('https://api.openai.com/v1/chat/completions', {

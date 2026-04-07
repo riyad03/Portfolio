@@ -619,6 +619,24 @@ a {
   gap: 0.5rem;
 }
 
+/* Mobile: Make entire project card tappable */
+@media (max-width: 768px) {
+  .project-card {
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(99, 102, 241, 0.1);
+  }
+
+  .project-card:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+  }
+
+  .project-link {
+    pointer-events: none;
+    opacity: 0.8;
+  }
+}
+
 /* === SKILLS SECTION === */
 .skills-grid {
   display: grid;

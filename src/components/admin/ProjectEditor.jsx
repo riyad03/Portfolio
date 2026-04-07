@@ -257,10 +257,14 @@ const ProjectEditor = ({ portfolioData, projectIndex, updateData, onClose }) => 
                     <input type="text" className="form-input" value={formData.videoUrl} placeholder="Or Paste URL" onChange={(e) => handleChange('videoUrl', e.target.value)} />
                 </div>
 
-                <div className="form-group" style={{ marginTop: '1rem' }}>
+                <div className="form-group" style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                     <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.95rem' }}>
                         <input type="checkbox" checked={formData.showStats !== false} onChange={(e) => handleChange('showStats', e.target.checked)} />
                         Show Performance Stats Section
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.95rem' }}>
+                        <input type="checkbox" checked={formData.liveProjectEnabled !== false} onChange={(e) => handleChange('liveProjectEnabled', e.target.checked)} />
+                        Enable "Visit Live Project" Button
                     </label>
                 </div>
 

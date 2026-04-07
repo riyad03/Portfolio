@@ -160,14 +160,16 @@ const ProjectDetail = ({ portfolioData, onEdit }) => {
 
                 <div className="section" style={{ padding: '3rem 0 5rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                     <div className="cta-row" style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center' }}>
-                        {project.link && project.link !== '#' ? (
-                            <a href={project.link} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
-                                Visit Live Project
-                            </a>
-                        ) : (
-                            <button className="btn btn-primary" onClick={() => alert('Live link coming soon!')}>
-                                Visit Live Project
-                            </button>
+                        {project.liveProjectEnabled !== false && (
+                            project.link && project.link !== '#' ? (
+                                <a href={project.link} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+                                    Visit Live Project
+                                </a>
+                            ) : (
+                                <button className="btn btn-primary" onClick={() => alert('Live link coming soon!')}>
+                                    Visit Live Project
+                                </button>
+                            )
                         )}
                         <Link to="/" className="btn btn-secondary">All Projects</Link>
                     </div>

@@ -29,6 +29,7 @@ export const usePortfolio = () => {
                     const mergedData = {
                         ...defaultData,
                         ...data,
+                        chatbotContext: data.chatbotContext || defaultData.chatbotContext,
                         settings: {
                             ...defaultData.settings,
                             ...data.settings,

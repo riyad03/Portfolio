@@ -1,6 +1,58 @@
 import React from 'react';
 
 const Hero = ({ hero, onChatToggle }) => {
+    // Parse text with formatting: [blue]text[/blue] for blue text
+    const parseFormattedText = (text) => {
+        if (!text) return null;
+
+        console.log('Hero bio text:', text);
+        console.log('Contains [blue]:', text.includes('[blue]'));
+
+        // Check if text contains [blue] tags
+        if (!text.includes('[blue]')) return text;
+
+        const parts = [];
+        const regex = /\[blue\](.*?)\[\/blue\]/gs;
+        let lastIndex = 0;
+        let matchIndex = 0;
+
+        text.replace(regex, (match, content, offset) => {
+            // Add text before the match
+            if (offset > lastIndex) {
+                parts.push(
+                    <span key={`text-${matchIndex}`}>
+                        {text.substring(lastIndex, offset)}
+                    </span>
+                );
+            }
+
+            // Add the blue text with line break
+            parts.push(
+                <React.Fragment key={`blue-${matchIndex}`}>
+                    <br />
+                    <span style={{ color: '#00b4d8', fontWeight: '500' }}>
+                        {content.trim()}
+                    </span>
+                </React.Fragment>
+            );
+
+            lastIndex = offset + match.length;
+            matchIndex++;
+            return match;
+        });
+
+        // Add remaining text
+        if (lastIndex < text.length) {
+            parts.push(
+                <span key={`text-end`}>
+                    {text.substring(lastIndex)}
+                </span>
+            );
+        }
+
+        return parts.length > 0 ? <>{parts}</> : text;
+    };
+
     return (
         <section className="hero section" id="home">
             <div className="hero-top-fade"></div>
@@ -9,7 +61,7 @@ const Hero = ({ hero, onChatToggle }) => {
                     <img src={hero.image} alt="Profile" className="hero-image" id="hero-image" />
                     <h1 id="hero-name">{hero.name}</h1>
                     <p className="title gradient-text" id="hero-title">{hero.title}</p>
-                    <p className="bio" id="hero-bio">{hero.bio}</p>
+                    <p className="bio" id="hero-bio">{parseFormattedText(hero.bio)}</p>
                     <div className="hero-actions">
                         <button className="btn btn-primary" onClick={() => window.location.hash = '#contact'}>Get in Touch</button>
                         <button className="btn btn-secondary" onClick={() => window.location.hash = '#projects'}>View Work</button>

@@ -96,6 +96,12 @@ const AdminPanel = ({ portfolioData, updateData, onClose }) => {
         if (window.confirm('Are you sure you want to reset all data to defaults?')) {
             const { defaultData } = await import('../../data/portfolioData');
             setFormData(defaultData);
+
+            // Save the default data to Firebase immediately
+            console.log('🔄 Resetting to default data and saving to Firebase...');
+            updateData(defaultData);
+            alert('Portfolio reset to defaults and saved!');
+            onClose();
         }
     };
 
@@ -228,6 +234,41 @@ const AdminPanel = ({ portfolioData, updateData, onClose }) => {
                     </div>
                 </div>
 
+                {/* Skills Section */}
+                <div className="admin-section">
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <h3>Skills & Expertise</h3>
+                        <button className="btn-add" onClick={() => addArrayItem('skills', { name: 'New Skill', level: 80, category: 'Frontend' })}>+ Add</button>
+                    </div>
+                    {formData.skills.map((skill, index) => (
+                        <div key={index} className="project-editor glass" style={{ marginBottom: '1rem', padding: '1rem' }}>
+                            <div className="form-group" style={{ marginBottom: '0.5rem' }}>
+                                <label className="form-label">Skill Name</label>
+                                <input type="text" className="form-input" value={skill.name} placeholder="Skill Name (e.g., JavaScript)" onChange={(e) => handleSkillChange(index, 'name', e.target.value)} />
+                            </div>
+                            <div className="form-group" style={{ marginBottom: '0.5rem' }}>
+                                <label className="form-label">Category</label>
+                                <select className="form-input" value={skill.category} onChange={(e) => handleSkillChange(index, 'category', e.target.value)}>
+                                    <option value="Machine Learning">Machine Learning</option>
+                                    <option value="Deep Learning">Deep Learning</option>
+                                    <option value="NLP">NLP</option>
+                                    <option value="Computer Vision">Computer Vision</option>
+                                    <option value="AI Frameworks">AI Frameworks</option>
+                                    <option value="Data Science">Data Science</option>
+                                    <option value="AI Tools">AI Tools</option>
+                                    <option value="Automation">Automation</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div className="form-group" style={{ marginBottom: '0.5rem' }}>
+                                <label className="form-label">Level: {skill.level}%</label>
+                                <input type="range" min="0" max="100" value={skill.level} onChange={(e) => handleSkillChange(index, 'level', parseInt(e.target.value))} style={{ width: '100%', cursor: 'pointer' }} />
+                            </div>
+                            <button className="btn-remove" onClick={() => removeArrayItem('skills', index)}>Remove</button>
+                        </div>
+                    ))}
+                </div>
+
                 {/* Projects Section */}
                 <div className="admin-section">
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -241,10 +282,14 @@ const AdminPanel = ({ portfolioData, updateData, onClose }) => {
                                 <input type="text" className="form-input" value={project.title} placeholder="Title" onChange={(e) => handleProjectChange(index, 'title', e.target.value)} />
                             </div>
 
-                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
                                 <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem' }}>
                                     <input type="checkbox" checked={project.showStats !== false} onChange={(e) => handleProjectChange(index, 'showStats', e.target.checked)} />
                                     Show Stats Section (Uptime/Performance)
+                                </label>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem' }}>
+                                    <input type="checkbox" checked={project.liveProjectEnabled !== false} onChange={(e) => handleProjectChange(index, 'liveProjectEnabled', e.target.checked)} />
+                                    Enable "Visit Live Project" Button
                                 </label>
                             </div>
                             <div className="form-group" style={{ marginTop: '0.8rem' }}>
@@ -324,6 +369,48 @@ const AdminPanel = ({ portfolioData, updateData, onClose }) => {
                         customSections={formData.customSections || []}
                         onUpdate={(updated) => setFormData(prev => ({ ...prev, customSections: updated }))}
                     />
+                </div>
+
+                {/* Contact Section */}
+                <div className="admin-section">
+                    <h3>Contact Information</h3>
+                    <div className="form-group">
+                        <label className="form-label">Email</label>
+                        <input type="email" className="form-input" value={formData.contact.email} onChange={(e) => handleChange('contact', 'email', e.target.value)} />
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label">Phone</label>
+                        <input type="text" className="form-input" value={formData.contact.phone} onChange={(e) => handleChange('contact', 'phone', e.target.value)} />
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label">LinkedIn</label>
+                        <input type="text" className="form-input" value={formData.contact.linkedin} onChange={(e) => handleChange('contact', 'linkedin', e.target.value)} />
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label">GitHub</label>
+                        <input type="text" className="form-input" value={formData.contact.github} onChange={(e) => handleChange('contact', 'github', e.target.value)} />
+                    </div>
+                </div>
+
+                {/* AI Chatbot Context */}
+                <div className="admin-section">
+                    <h3>🤖 AI Chatbot Context</h3>
+                    <p style={{ fontSize: '0.85rem', opacity: 0.7, marginBottom: '1rem' }}>
+                        Customize the AI assistant's behavior and knowledge. This context helps the chatbot understand how to represent you and respond to visitor questions.
+                    </p>
+                    <div className="form-group">
+                        <label className="form-label">System Context / Instructions</label>
+                        <textarea
+                            className="form-textarea"
+                            value={formData.chatbotContext || ''}
+                            onChange={(e) => setFormData(prev => ({ ...prev, chatbotContext: e.target.value }))}
+                            placeholder="Describe who you are, your expertise, tone, and how the AI should represent you..."
+                            style={{ minHeight: '200px', fontFamily: 'monospace', fontSize: '0.9rem' }}
+                        />
+                    </div>
+                    <p style={{ fontSize: '0.75rem', opacity: 0.6, marginTop: '0.5rem' }}>
+                        💡 Tip: Include your background, specializations, work style, and any specific instructions for how the AI should answer questions about you.
+                    </p>
                 </div>
 
                 {/* Cloud Settings */}
