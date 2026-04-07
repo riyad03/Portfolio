@@ -65,7 +65,7 @@ const ChatBot = ({ portfolioData, isOpen, onToggle }) => {
                 <div className="chatbot-window">
                     <div className="chatbot-header">
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#4ade80', boxShadow: '0 0 10px #4ade80' }}></div>
+                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-accent-primary)' }}></div>
                             <h3>AI Assistant</h3>
                         </div>
                         <button onClick={onToggle} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', fontSize: '1.2rem' }}>×</button>
@@ -120,7 +120,7 @@ const ChatBot = ({ portfolioData, isOpen, onToggle }) => {
                 ) : (
                     <div style={{ position: 'relative' }}>
                         <svg viewBox="0 0 24 24" width="30" height="30" fill="#fff"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" /></svg>
-                        <div style={{ position: 'absolute', top: '-5px', right: '-5px', width: '12px', height: '12px', background: '#4ade80', borderRadius: '50%', border: '2px solid var(--color-bg-primary)' }}></div>
+                        <div style={{ position: 'absolute', top: '-5px', right: '-5px', width: '12px', height: '12px', background: 'var(--color-accent-primary)', borderRadius: '50%', border: '2px solid var(--color-bg-primary)' }}></div>
                     </div>
                 )}
             </div>

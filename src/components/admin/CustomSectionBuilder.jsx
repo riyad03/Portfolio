@@ -104,7 +104,7 @@ const CustomSectionBuilder = ({ customSections, onUpdate }) => {
                 </div>
             ) : (
                 customSections.map((section, sIndex) => (
-                    <div key={section.id} className="custom-section-editor" style={{ background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(168, 85, 247, 0.06))', border: '2px solid var(--color-accent-primary)', borderRadius: '1.5rem', padding: '1.5rem', marginBottom: '2rem', position: 'relative', boxShadow: '0 4px 20px rgba(99, 102, 241, 0.15)' }}>
+                    <div key={section.id} className="custom-section-editor" style={{ background: 'linear-gradient(135deg, rgba(0, 229, 255, 0.08), rgba(0, 130, 255, 0.06))', border: '2px solid var(--color-accent-primary)', borderRadius: '1.5rem', padding: '1.5rem', marginBottom: '2rem', position: 'relative', boxShadow: '0 4px 20px rgba(0, 229, 255, 0.15)' }}>
                         <div style={{ background: 'var(--color-accent-gradient)', padding: '0.8rem 1rem', borderRadius: '1rem', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <h4 style={{ color: 'white', margin: 0, fontSize: '1rem' }}>📄 Section {sIndex + 1}: {section.title || 'Untitled'}</h4>
                             <div style={{ display: 'flex', gap: '0.5rem' }}>

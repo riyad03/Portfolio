@@ -3,6 +3,7 @@ import React from 'react';
 const Hero = ({ hero, onChatToggle }) => {
     return (
         <section className="hero section" id="home">
+            <div className="hero-top-fade"></div>
             <div className="container">
                 <div className="hero-content">
                     <img src={hero.image} alt="Profile" className="hero-image" id="hero-image" />

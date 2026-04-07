@@ -67,7 +67,7 @@ const ProjectDetail = ({ portfolioData, onEdit }) => {
                         onError={(e) => e.target.src = project.image}
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
-                    <div className="project-hero-overlay" style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(10,10,15,0.8) 0%, rgba(10,10,15,0) 25%, rgba(10,10,15,0) 70%, rgba(10,10,15,1) 100%)' }}></div>
+                    <div className="project-hero-overlay" style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(5,7,10,0.8) 0%, rgba(5,7,10,0) 25%, rgba(5,7,10,0) 70%, rgba(5,7,10,1) 100%)' }}></div>
 
                     {/* Integrated Title into Hero for stability */}
                     <div className="hero-content-wrap" style={{ position: 'absolute', bottom: '2rem', left: '3rem', right: '3rem', zIndex: 11 }}>
