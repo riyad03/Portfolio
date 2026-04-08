@@ -203,6 +203,28 @@ const ProjectEditor = ({ portfolioData, projectIndex, updateData, onClose }) => 
                 </div>
 
                 <div className="form-group">
+                    <label className="form-label">Showcase Title (for Highlighted Project Banner)</label>
+                    <input
+                        type="text"
+                        className="form-input"
+                        value={formData.showcaseTitle || ''}
+                        onChange={(e) => handleChange('showcaseTitle', e.target.value)}
+                        placeholder="Optional custom title for featured banner..."
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label className="form-label">Showcase Description (for Highlighted Project Banner)</label>
+                    <textarea
+                        className="form-textarea"
+                        value={formData.showcaseDescription || ''}
+                        onChange={(e) => handleChange('showcaseDescription', e.target.value)}
+                        placeholder="Description for the featured project at the top..."
+                        style={{ height: '100px' }}
+                    />
+                </div>
+
+                <div className="form-group">
                     <label className="form-label">Short Description (for Cards)</label>
                     <textarea
                         className="form-textarea"
@@ -258,6 +280,10 @@ const ProjectEditor = ({ portfolioData, projectIndex, updateData, onClose }) => 
                 </div>
 
                 <div className="form-group" style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.95rem' }}>
+                        <input type="checkbox" checked={formData.visible !== false} onChange={(e) => handleChange('visible', e.target.checked)} />
+                        <strong>Show this project on main page</strong>
+                    </label>
                     <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.95rem' }}>
                         <input type="checkbox" checked={formData.showStats !== false} onChange={(e) => handleChange('showStats', e.target.checked)} />
                         Show Performance Stats Section

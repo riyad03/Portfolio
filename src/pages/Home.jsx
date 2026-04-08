@@ -22,7 +22,7 @@ const Home = ({ portfolioData, onChatToggle }) => {
         <main>
             {/* Highlighted Project Section - Featured at the top */}
             {highlightedProject && (
-                <HighlightedProject project={highlightedProject} index={highlightedProjectIndex} />
+                <HighlightedProject project={highlightedProject} index={highlightedProjectIndex} settings={settings} />
             )}
 
             <Hero hero={hero} onChatToggle={onChatToggle} />
@@ -34,7 +34,9 @@ const Home = ({ portfolioData, onChatToggle }) => {
                 <CustomSection key={section.id} section={section} />
             ))}
 
-            <Skills skills={skills} />
+            {sectionsVisible.skills && (
+                <Skills skills={skills} />
+            )}
 
             {sectionsVisible.certifications && (
                 <Certifications certifications={certifications} />

@@ -1,8 +1,8 @@
 export const defaultData = {
     hero: {
         name: 'Riyad Rachidi',
-        title: 'Full Stack Developer',
-        bio: 'Passionate about creating beautiful and functional web experiences. Specializing in modern web technologies and user-centric design.',
+        title: 'AI Engineer & Consultant',
+        bio: 'Startups move fast. Manual processes slow them down. I build custom AI systems that automate the work stealing your team\'s time — so you can scale without hiring more people.\n\nIf you have a process problem, I probably have an AI solution for it.',
         image: '/profile.png'
     },
     about: {
@@ -12,12 +12,14 @@ export const defaultData = {
     projects: [
         {
             title: 'E-Commerce Platform',
+            showcaseDescription: 'A cutting-edge e-commerce platform featuring real-time inventory management, secure payment processing, and advanced analytics to help businesses scale efficiently.',
             shortDescription: 'Modern e-commerce solution with real-time inventory.',
             description: 'A modern e-commerce solution with real-time inventory management and secure payment processing.',
             image: 'https://images.unsplash.com/photo-1557821552-17105176677c?w=400&h=300&fit=crop',
             tags: ['React', 'Node.js', 'MongoDB'],
             link: '#',
             videoUrl: '',
+            visible: true,
             showStats: true,
             liveProjectEnabled: true,
             stats: [
@@ -28,12 +30,14 @@ export const defaultData = {
         },
         {
             title: 'Task Management App',
+            showcaseDescription: 'A powerful collaborative task management platform with real-time synchronization, team collaboration features, and intuitive project tracking.',
             shortDescription: 'Collaborative task tool with real-time team sync.',
             description: 'Collaborative task management tool with real-time updates and team synchronization.',
             image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop',
             tags: ['Vue.js', 'Firebase', 'Tailwind'],
             link: '#',
             videoUrl: '',
+            visible: true,
             showStats: true,
             liveProjectEnabled: true,
             stats: [
@@ -50,6 +54,7 @@ export const defaultData = {
             tags: ['React', 'D3.js', 'Express'],
             link: '#',
             videoUrl: '',
+            visible: true,
             showStats: true,
             liveProjectEnabled: true,
             stats: [
@@ -66,6 +71,7 @@ export const defaultData = {
             tags: ['IoT', 'Python', 'Machine Learning'],
             link: '#',
             videoUrl: '',
+            visible: true,
             showStats: true,
             liveProjectEnabled: true,
             stats: [
@@ -82,6 +88,7 @@ export const defaultData = {
             tags: ['React', 'Web3.js', 'Node.js'],
             link: '#',
             videoUrl: '',
+            visible: true,
             showStats: true,
             liveProjectEnabled: true,
             stats: [
@@ -133,7 +140,13 @@ Tone: Professional yet approachable, technical but accessible`,
     settings: {
         password: 'admin',
         highlightedProjectIndex: 0,
+        highlightedTitle: {
+            enabled: true,
+            prefix: 'Featured for',
+            highlight: 'GITEX'
+        },
         sectionsVisible: {
+            skills: false,
             certifications: false,
             experience: false,
             videos: false

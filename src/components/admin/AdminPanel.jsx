@@ -225,7 +225,7 @@ const AdminPanel = ({ portfolioData, updateData, onClose }) => {
                     </div>
 
                     <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                        {['certifications', 'experience', 'videos'].map(s => (
+                        {['skills', 'certifications', 'experience', 'videos'].map(s => (
                             <label key={s} style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', cursor: 'pointer' }}>
                                 <input type="checkbox" checked={formData.settings.sectionsVisible[s]} onChange={() => toggleSection(s)} />
                                 <span style={{ textTransform: 'capitalize' }}>Show {s} Section</span>

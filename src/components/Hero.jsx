@@ -1,53 +1,70 @@
 import React from 'react';
 
 const Hero = ({ hero, onChatToggle }) => {
-    // Parse text with formatting: [blue]text[/blue] for blue text
+    // Parse text with formatting: [blue]text[/blue] for blue text, [section]title[/section] for section headers
     const parseFormattedText = (text) => {
         if (!text) return null;
 
-        console.log('Hero bio text:', text);
-        console.log('Contains [blue]:', text.includes('[blue]'));
-
-        // Check if text contains [blue] tags
-        if (!text.includes('[blue]')) return text;
+        // Check if text contains formatting tags
+        if (!text.toLowerCase().includes('[blue]') && !text.toLowerCase().includes('[section]')) {
+            return text;
+        }
 
         const parts = [];
-        const regex = /\[blue\](.*?)\[\/blue\]/gs;
-        let lastIndex = 0;
-        let matchIndex = 0;
+        let keyCounter = 0;
+        let currentIndex = 0;
 
-        text.replace(regex, (match, content, offset) => {
+        // Process sections and blue tags together
+        const combinedRegex = /\[section\](.*?)\[[\\/]section\]|\[blue\](.*?)\[[\\/]blue\]/gis;
+        let match;
+
+        while ((match = combinedRegex.exec(text)) !== null) {
             // Add text before the match
-            if (offset > lastIndex) {
+            if (match.index > currentIndex) {
+                const beforeText = text.substring(currentIndex, match.index);
+                if (beforeText.trim()) {
+                    parts.push(
+                        <span key={`text-${keyCounter++}`}>
+                            {beforeText}
+                        </span>
+                    );
+                }
+            }
+
+            // Check if it's a section or blue tag
+            if (match[1] !== undefined) {
+                // It's a [section]...[/section]
                 parts.push(
-                    <span key={`text-${matchIndex}`}>
-                        {text.substring(lastIndex, offset)}
+                    <React.Fragment key={`section-${keyCounter++}`}>
+                        <br />
+                        <strong style={{ fontSize: '1.1em', color: 'rgba(255,255,255,0.95)', display: 'block', marginBottom: '0.5rem', fontWeight: '700' }}>
+                            <span style={{ color: '#00b4d8', marginRight: '0.5rem' }}>•</span>
+                            {match[1].trim()}
+                        </strong>
+                    </React.Fragment>
+                );
+            } else if (match[2] !== undefined) {
+                // It's a [blue]...[/blue]
+                parts.push(
+                    <span key={`blue-${keyCounter++}`} style={{ color: '#00b4d8', fontWeight: '500' }}>
+                        {match[2].trim()}
                     </span>
                 );
             }
 
-            // Add the blue text with line break
-            parts.push(
-                <React.Fragment key={`blue-${matchIndex}`}>
-                    <br />
-                    <span style={{ color: '#00b4d8', fontWeight: '500' }}>
-                        {content.trim()}
-                    </span>
-                </React.Fragment>
-            );
-
-            lastIndex = offset + match.length;
-            matchIndex++;
-            return match;
-        });
+            currentIndex = combinedRegex.lastIndex;
+        }
 
         // Add remaining text
-        if (lastIndex < text.length) {
-            parts.push(
-                <span key={`text-end`}>
-                    {text.substring(lastIndex)}
-                </span>
-            );
+        if (currentIndex < text.length) {
+            const remainingText = text.substring(currentIndex);
+            if (remainingText.trim()) {
+                parts.push(
+                    <span key={`text-end`}>
+                        {remainingText}
+                    </span>
+                );
+            }
         }
 
         return parts.length > 0 ? <>{parts}</> : text;
